@@ -40,6 +40,12 @@ export default function ExpenseChart({ summary, categories }: ExpenseChartProps)
     return null;
   };
 
+  const renderLabel = (entry: any) => {
+    const category = getCategory(entry.name);
+    const percentage = ((entry.value / chartData.reduce((a, b) => a + b.value, 0)) * 100).toFixed(0);
+    return `${category.icon} ${percentage}%`;
+  };
+
   if (chartData.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
@@ -66,7 +72,7 @@ export default function ExpenseChart({ summary, categories }: ExpenseChartProps)
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={(entry) => `${entry.icon} ${((entry.value / chartData.reduce((a, b) => a + b.value, 0)) * 100).toFixed(0)}%`}
+              label={renderLabel}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
