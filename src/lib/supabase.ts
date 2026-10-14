@@ -1,9 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Função para obter o client do Supabase (lazy initialization)
+export function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+  
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
 
 // Função para salvar expense no Supabase
 export async function saveExpenseToSupabase(expense: {
@@ -13,7 +20,9 @@ export async function saveExpenseToSupabase(expense: {
   date: string;
   source?: string;
 }) {
-  if (!supabaseUrl || !supabaseAnonKey) {
+  const supabase = getSupabaseClient();
+  
+  if (!supabase) {
     console.warn('Supabase not configured, skipping save');
     return null;
   }
