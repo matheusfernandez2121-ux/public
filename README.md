@@ -11,6 +11,7 @@ Sistema de controle de gastos pessoais com dashboard visual, categorização e a
 - ✅ Histórico completo de transações
 - ✅ Interface responsiva e dark mode
 - 🔄 Integração com Supabase (opcional)
+- 📱 **Webhook API para integração com Atalhos do iPhone**
 
 ## Stack Tecnológica
 
@@ -157,6 +158,47 @@ git push -u origin main
 Se você configurou o Supabase, adicione estas variáveis no painel do Vercel:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Para usar o webhook com segurança, adicione:
+- `WEBHOOK_API_KEY` (opcional, mas recomendado)
+
+## Integração com Atalhos do iPhone
+
+O sistema possui um webhook API que permite registrar gastos automaticamente usando o app Atalhos (Shortcuts) do iPhone.
+
+### Endpoint do Webhook
+```
+POST /api/expenses
+```
+
+### Formato do Payload
+```json
+{
+  "description": "Uber Viagem",
+  "amount": 25.50,
+  "category": "transport",
+  "date": "2026-10-14",
+  "apiKey": "sua-chave-secreta"
+}
+```
+
+### Como Configurar
+Veja o guia completo em [ATALHOS_IPHONE.md](./ATALHOS_IPHONE.md)
+
+Resumo rápido:
+1. Configure a API key no Vercel (opcional)
+2. Crie um atalho no app Atalhos do iPhone
+3. Configure o atalho para enviar dados para `/api/expenses`
+4. Adicione à tela de início para acesso rápido
+
+### Categorias Suportadas
+O sistema mapeia automaticamente categorias:
+- `groceries`, `food`, `restaurant` → Alimentação
+- `transport`, `uber`, `taxi` → Transporte
+- `entertainment`, `movies` → Lazer
+- `health`, `pharmacy` → Saúde
+- `housing`, `utilities` → Moradia
+- Outros → Outros
 
 ## Licença
 

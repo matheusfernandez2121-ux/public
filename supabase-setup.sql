@@ -5,14 +5,26 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Tabela de gastos
-CREATE TABLE expenses (
+CREATE TABLE IF NOT EXISTS expenses (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   description TEXT NOT NULL,
   amount DECIMAL(10,2) NOT NULL,
   category TEXT NOT NULL,
   date DATE NOT NULL,
+  source TEXT DEFAULT 'manual' CHECK (source IN ('manual', 'webhook')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Adicionar coluna source se a tabela já existir
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'expenses' AND column_name = 'source'
+    ) THEN
+        ALTER TABLE expenses ADD COLUMN source TEXT DEFAULT 'manual' CHECK (source IN ('manual', 'webhook'));
+    END IF;
+END $$;
 
 -- Tabela de orçamentos
 CREATE TABLE budgets (

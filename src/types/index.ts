@@ -5,6 +5,7 @@ export interface Expense {
   category: string;
   date: string;
   created_at: string;
+  source?: 'manual' | 'webhook';
 }
 
 export interface Category {
